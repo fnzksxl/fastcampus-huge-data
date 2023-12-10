@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Path
 from sqlalchemy.orm.session import Session
 
-from app.api.v1.member.schema import memberRegister
-from app.api.v1.member.service import memberSave
+from app.api.v1.member.schema import memberRegister, memberFind
+from app.api.v1.member.service import memberSave, memberSearch
 from app.database import get_db
 
 router = APIRouter(tags=["Member"])
@@ -24,3 +24,16 @@ async def insert(memberRegister: memberRegister, db: Session = Depends(get_db)):
     ---------------
     """
     return await memberSave(memberRegister, db)
+
+
+@router.get("/{id}", response_model=memberFind)
+async def find(id: int = Path(...), db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. 회원의 Index(Id)를 이용해서 회원 정보를 반환한다.
+    ------------
+    --- Path 파라미터 ---
+    1. id: int
+    ---------------
+    """
+    return await memberSearch(id, db)

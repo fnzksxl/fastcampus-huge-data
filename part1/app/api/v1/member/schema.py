@@ -6,3 +6,7 @@ class memberRegister(BaseModel):
     email: str
     nickname: str
     birthday: datetime
+
+
+class memberFind(memberRegister):
+    id: int
