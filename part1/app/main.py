@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app import api
 
 app = FastAPI()
 
@@ -10,3 +11,6 @@ def on_startup():
     from app.database import engine
 
     model.Base.metadata.create_all(bind=engine)
+
+
+app.include_router(api.router)
