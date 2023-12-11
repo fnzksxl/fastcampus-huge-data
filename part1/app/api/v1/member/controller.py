@@ -16,12 +16,12 @@ async def insert(memberRegister: memberRegister, db: Session = Depends(get_db)):
     2. 닉네임은 10자를 넘길 수 없다.
     ------------
 
-    --- 파라미터 ---
+    --- 바디 ---
     1. memberRegister
       - email : str
       - nikcname : str
       - birthday : datetime
-    ---------------
+    ------------
     """
     return await memberSave(memberRegister, db)
 
@@ -32,6 +32,7 @@ async def find(id: int = Path(...), db: Session = Depends(get_db)):
     --- 목표 ---
     1. 회원의 Index(Id)를 이용해서 회원 정보를 반환한다.
     ------------
+
     --- Path 파라미터 ---
     1. id: int
     ---------------
@@ -40,13 +41,21 @@ async def find(id: int = Path(...), db: Session = Depends(get_db)):
 
 
 @router.put("/{id}", response_model=memberFind, status_code=202)
-async def updateNickname(id: int = Path(...), newName=memberUpdate, db: Session = Depends(get_db)):
+async def updateNickname(
+    memberUpdate: memberUpdate, id: int = Path(...), db: Session = Depends(get_db)
+):
     """
     --- 목표 ---
     1. 회원의 Index(Id)를 이용해 Nickname을 수정한다
     ------------
+
     --- Path 파라미터 ---
     1. id: int
     --------------------
+
+    --- 바디 ---
+    1. memberUpdate
+      - nikcname : str
+    ------------
     """
-    return await memberUpdateNickname(id, newName, db)
+    return await memberUpdateNickname(id, memberUpdate.nickname, db)
