@@ -14,7 +14,7 @@ async def validateNickname(nickname):
 
 
 async def memberSave(memberInfo, db):
-    validateNickname(memberInfo.nickname)
+    await validateNickname(memberInfo.nickname)
     try:
         memberInfoRow = model.Member(**memberInfo.dict())
         db.add(memberInfoRow)
@@ -50,6 +50,7 @@ async def memberUpdateNickname(id, newName, db):
     where id = : id;
     """
     try:
+        await validateNickname(newName)
         memberRow = db.query(model.Member).filter_by(id=id).first()
         memberRow.nickname = newName
         db.commit()
