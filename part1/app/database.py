@@ -2,18 +2,29 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from app.config import settings
+from app.config import settings, is_main
 
 # MySQL과 연결할 Engine 생성
-engine = create_engine(
-    "mysql+pymysql://{username}:{password}@{host}:{port}/{name}".format(
-        username=settings.DB_USERNAME,
-        password=settings.DB_PASSWORD,
-        host=settings.DB_HOST,
-        port=settings.DB_PORT,
-        name=settings.DB_PART1_NAME,
+if is_main.IS_MAIN:
+    engine = create_engine(
+        "mysql+pymysql://{username}:{password}@{host}:{port}/{name}".format(
+            username=settings.DB_USERNAME,
+            password=settings.DB_PASSWORD,
+            host=settings.DB_HOST,
+            port=settings.DB_PORT,
+            name=settings.DB_PART1_NAME,
+        )
     )
-)
+else:
+    engine = create_engine(
+        "mysql+pymysql://{username}:{password}@{host}:{port}/{name}".format(
+            username=settings.DB_TEST_USERNAME,
+            password=settings.DB_TEST_PASSWORD,
+            host=settings.DB_TEST_HOST,
+            port=settings.DB_TEST_PORT,
+            name=settings.DB_TEST_PART1_NAME,
+        )
+    )
 
 # SQLAlchemy가 데이터베이스와 상호작용할 때 사용하는 Session생성
 SessionLocal = sessionmaker(
