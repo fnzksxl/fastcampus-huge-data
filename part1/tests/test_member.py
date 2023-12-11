@@ -29,8 +29,14 @@ async def test_post_user(client):
 @pytest.mark.asyncio
 async def test_put_user(client, user):
     body = {"nickname": "newNick"}
-    r = await client.put(f"/member/{user.id}", data=json.dumps(body))
-    data = r.json()
+    r1 = await client.put(f"/member/{user.id}", data=json.dumps(body))
+    data1 = r1.json()
 
-    assert r.status_code == 202
-    assert data.get("nickname") == body["nickname"]
+    assert r1.status_code == 202
+    assert data1.get("nickname") == body["nickname"]
+
+    r2 = await client.get(f"/member/{user.id}/nickname-histories")
+    data2 = r2.json()
+
+    assert r2.status_code == 200
+    assert data2[0].get("nickname") == user.nickname
