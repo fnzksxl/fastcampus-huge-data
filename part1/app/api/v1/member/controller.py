@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Depends, Path
 from sqlalchemy.orm.session import Session
+from typing import List
 
-from app.api.v1.member.schema import memberRegister, memberFind, memberUpdate
-from app.api.v1.member.service import memberSave, memberSearch, memberUpdateNickname
+from app.api.v1.member.schema import memberRegister, memberFind, memberUpdate, nicknameHistory
+from app.api.v1.member.service import (
+    memberSave,
+    memberSearch,
+    memberUpdateNickname,
+    memberGetNicknameHistories,
+)
 from app.database import get_db
 
 router = APIRouter(tags=["Member"])
@@ -59,3 +65,17 @@ async def updateNickname(
     ------------
     """
     return await memberUpdateNickname(id, memberUpdate.nickname, db)
+
+
+@router.get("/{memberId}/nickname-histories", response_model=List[nicknameHistory])
+async def getNicknameHistories(memberId: int = Path(...), db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. 회원의 Index(Id)를 이용해 Nickname 변경 이력들을 반환한다
+    ------------
+
+    --- Path 파라미터 ---
+    1. memberId: int
+    --------------------
+    """
+    return await memberGetNicknameHistories(memberId, db)
