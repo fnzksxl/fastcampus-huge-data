@@ -8,7 +8,7 @@ from app.database import get_db
 router = APIRouter(tags=["Member"])
 
 
-@router.post("")
+@router.post("", status_code=201)
 async def insert(memberRegister: memberRegister, db: Session = Depends(get_db)):
     """
     --- 목표 ---
@@ -26,7 +26,7 @@ async def insert(memberRegister: memberRegister, db: Session = Depends(get_db)):
     return await memberSave(memberRegister, db)
 
 
-@router.get("/{id}", response_model=memberFind)
+@router.get("/{id}", response_model=memberFind, status_code=200)
 async def find(id: int = Path(...), db: Session = Depends(get_db)):
     """
     --- 목표 ---
