@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, DateTime, func, String
+from sqlalchemy.sql.schema import ForeignKey
 from app.database import Base
 
 
@@ -17,5 +18,17 @@ class Member(Base, BaseMin):
     birthday = Column(DateTime, nullable=False)
 
     # Member 객체를 Dictionary 형태로 변환할 수 있음
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+# 과거의 기록을 가지고 있는 History => 정규화의 대상 X
+# (데이터가 항상 최신성을 요구하는지? = 과거의 기록을 남겨야 하는지?)
+class MemberNicknameHistory(Base, BaseMin):
+    __tablename__ = "member_nickname_history"
+
+    nickname = Column(String(10), nullable=False)
+    memberId = Column(Integer, ForeignKey("member.id"))
+
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
