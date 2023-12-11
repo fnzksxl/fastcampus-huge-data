@@ -2,9 +2,12 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class memberRegister(BaseModel):
-    email: str
+class memberUpdate(BaseModel):
     nickname: str
+
+
+class memberRegister(memberUpdate):
+    email: str
     birthday: datetime
 
 

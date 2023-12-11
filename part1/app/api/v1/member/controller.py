@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Path
 from sqlalchemy.orm.session import Session
 
-from app.api.v1.member.schema import memberRegister, memberFind
-from app.api.v1.member.service import memberSave, memberSearch
+from app.api.v1.member.schema import memberRegister, memberFind, memberUpdate
+from app.api.v1.member.service import memberSave, memberSearch, memberUpdateNickname
 from app.database import get_db
 
 router = APIRouter(tags=["Member"])
@@ -37,3 +37,16 @@ async def find(id: int = Path(...), db: Session = Depends(get_db)):
     ---------------
     """
     return await memberSearch(id, db)
+
+
+@router.put("/{id}", response_model=memberFind, status_code=202)
+async def updateNickname(id: int = Path(...), newName=memberUpdate, db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. 회원의 Index(Id)를 이용해 Nickname을 수정한다
+    ------------
+    --- Path 파라미터 ---
+    1. id: int
+    --------------------
+    """
+    return await memberUpdateNickname(id, newName, db)

@@ -35,8 +35,28 @@ async def memberSearch(id, db):
     """
     try:
         memberRow = db.query(model.Member).filter_by(id=id).first()
+
         return memberRow.as_dict()
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"{e} Occured. While doing 'memberSearch"
+        )
+
+
+async def memberUpdateNickname(id, newName, db):
+    """
+    update member
+    set nickname = : newName
+    where id = : id;
+    """
+    try:
+        memberRow = db.query(model.Member).filter_by(id=id).first()
+        memberRow.nickname = newName
+        db.commit()
+
+        return memberRow.as_dict()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"{e} Occured. While doing 'memberUpdateNickname'",
         )
