@@ -40,3 +40,12 @@ def user(session) -> model.Member:
     session.commit()
 
     return row
+
+
+@pytest_asyncio.fixture
+def user2(session) -> model.Member:
+    row = model.Member(nickname="sample2", email="sample2@sample.com", birthday=datetime.now())
+    session.add(row)
+    session.commit()
+
+    return row
