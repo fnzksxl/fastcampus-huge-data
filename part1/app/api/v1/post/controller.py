@@ -4,7 +4,7 @@ from sqlalchemy.orm.session import Session
 
 from app.database import get_db
 from app.api.v1.post.schema import PostUpload, PostReturn
-from app.api.v1.post.service import postUpload, postCount, postPage
+from app.api.v1.post.service import postUpload, postCount, postPage, postCursor
 
 router = APIRouter(tags=["Post"])
 
@@ -62,3 +62,23 @@ async def page(memberId: int, offset: int, limit: int, db: Session = Depends(get
     ---------------------
     """
     return await postPage(memberId, offset, limit, db)
+
+
+@router.get("/cursor/{memberId}", status_code=200)
+async def cursor(memberId: int, size: int, key: int = None, db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. memberId 가 memberId인 게시글을 가져온 후
+    2. id가 key보다 작은 게시글을 size 개수 만큼 가져와 반환한다.
+    ------------
+
+    --- Path 파라미터 ---
+    1. memberId: int
+    --------------------
+
+    --- Query 파라미터 ---
+    1. size: int
+    2. key: int (can be None)
+    ---------------------
+    """
+    return await postCursor(memberId, size, key, db)

@@ -32,3 +32,30 @@ async def postPage(memberId, offset, limit, db):
     )
 
     return row
+
+
+async def postCursor(memberId, size, key, db):
+    async def findAllByMemberIdAndOrderByIdDesc(memberId, size):
+        return (
+            db.query(model.Post)
+            .filter_by(memberId=memberId)
+            .order_by(desc(model.Post.id))
+            .limit(size)
+            .all()
+        )
+
+    async def findAllByLessThanKeyAndMemberIdAndOrderByIdDesc(memberId, key, size):
+        return (
+            db.query(model.Post)
+            .filter(model.Post.memberId == memberId, model.Post.id < key)
+            .order_by(desc(model.Post.id))
+            .limit(size)
+            .all()
+        )
+
+    if key:
+        posts = await findAllByLessThanKeyAndMemberIdAndOrderByIdDesc(memberId, key, size)
+        return {"posts": posts, "nextKey": posts[-1].id if len(posts) else 0}
+    else:
+        posts = await findAllByMemberIdAndOrderByIdDesc(memberId, size)
+        return {"posts": posts, "nextKey": posts[-1].id if len(posts) else 0}
