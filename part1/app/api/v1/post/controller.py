@@ -1,9 +1,10 @@
+from datetime import date
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
 from app.api.v1.post.schema import PostUpload, PostReturn
-from app.api.v1.post.service import postUpload
+from app.api.v1.post.service import postUpload, postCount
 
 router = APIRouter(tags=["Post"])
 
@@ -22,3 +23,22 @@ async def create(data: PostUpload, db: Session = Depends(get_db)):
     ------------
     """
     return await postUpload(data, db)
+
+
+@router.get("/{postId}", status_code=200)
+async def count(postId: int, firstDate: date, lastDate: date, db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. 주어진 일자 내의 게시물 개수를 반환한다.
+    ------------
+
+    --- Path 파라미터 ---
+    1. postId: int
+    --------------------
+
+    --- Query 파라미터 ---
+    1. firstDate: date
+    2. lastDate: date
+    ---------------------
+    """
+    return await postCount(postId, firstDate, lastDate, db)
