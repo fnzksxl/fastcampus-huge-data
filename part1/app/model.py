@@ -1,4 +1,7 @@
 from sqlalchemy import Column, Integer, DateTime, func, String
+from sqlalchemy.sql.schema import ForeignKey
+
+
 from app.database import Base
 
 
@@ -17,5 +20,15 @@ class Member(Base, BaseMin):
     birthday = Column(DateTime, nullable=False)
 
     # Member 객체를 Dictionary 형태로 변환할 수 있음
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+class Follow(Base, BaseMin):
+    __tablename__ = "follow"
+
+    fromMemberId = Column(Integer, ForeignKey("member.id"))
+    toMemberId = Column(Integer, ForeignKey("member.id"))
+
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
