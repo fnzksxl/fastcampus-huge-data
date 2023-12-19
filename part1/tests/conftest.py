@@ -49,3 +49,12 @@ def user2(session) -> model.Member:
     session.commit()
 
     return row
+
+
+@pytest_asyncio.fixture
+def post(session, user) -> model.Post:
+    row = model.Post(memberId=user.id, content="Test Message")
+    session.add(row)
+    session.commit()
+
+    return row
