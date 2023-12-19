@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, func, String
+from sqlalchemy import Column, Integer, DateTime, func, String, Index
 from sqlalchemy.sql.schema import ForeignKey
 
 
@@ -39,6 +39,8 @@ class Post(Base, BaseMin):
 
     memberId = Column(Integer, ForeignKey("member.id"))
     content = Column(String(255))
+
+    __table_args__ = (Index("idx_post_created_member", "created_at", "memberId"),)
 
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
