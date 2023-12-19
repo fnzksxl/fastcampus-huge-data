@@ -7,6 +7,6 @@ async def get_members_from_follow_usacase(memberId, db):
     followList = await findAllByMemberId(memberId, db)
     followingList = []
     for following in followList:
-        followingList.append(memberFind(**await memberSearch(following.id, db)))
+        followingList.append(memberFind(**await memberSearch(following.toMemberId, db)))
 
     return followingList
