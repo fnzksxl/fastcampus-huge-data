@@ -45,13 +45,30 @@ async def memberSearch(id, db):
 
 async def memberUpdateNickname(id, newName, db):
     """
+    --- Update Nickname ---
     update member
     set nickname = : newName
     where id = : id;
+    -----------------------
+
+    ---------------- Save Nickname History ------------------
+    insert into member_nickname_history (member_id, nickname)
+    select id, nickname from member where id = :id;
+    ----------------------------------------------------------
+
     """
     try:
         await validateNickname(newName)
         memberRow = db.query(model.Member).filter_by(id=id).first()
+        try:
+            # 강의에서는 바뀐 이름을 저장했지만, 나는 바뀌기 전 이름을 저장해보기로 했다.
+            historyRow = model.MemberNicknameHistory(memberId=id, nickname=memberRow.nickname)
+            db.add(historyRow)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"{e} Occured. While saving 'memberNicknameHistory",
+            )
         memberRow.nickname = newName
         db.commit()
 
@@ -60,4 +77,19 @@ async def memberUpdateNickname(id, newName, db):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"{e} Occured. While doing 'memberUpdateNickname'",
+        )
+
+
+async def memberGetNicknameHistories(memberId, db):
+    """
+    select * from member_nickname_history
+    where member_id = : member_id
+    """
+    try:
+        histories = db.query(model.MemberNicknameHistory).filter_by(memberId=memberId).all()
+        return [history.as_dict() for history in histories]
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"{e} Occured. While doing 'memberGetNicknameHistories'",
         )

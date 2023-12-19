@@ -13,3 +13,10 @@ class memberRegister(memberUpdate):
 
 class memberFind(memberRegister):
     id: int
+
+
+class nicknameHistory(BaseModel):
+    nickname: str
+    memberId: int
+    id: int
+    created_at: datetime
