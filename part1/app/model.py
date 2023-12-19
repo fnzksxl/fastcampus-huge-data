@@ -32,3 +32,13 @@ class Follow(Base, BaseMin):
 
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+class Post(Base, BaseMin):
+    __tablename__ = "post"
+
+    memberId = Column(Integer, ForeignKey("member.id"))
+    content = Column(String(255))
+
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
