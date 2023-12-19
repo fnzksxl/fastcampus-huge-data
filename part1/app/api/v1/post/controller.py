@@ -25,15 +25,15 @@ async def create(data: PostUpload, db: Session = Depends(get_db)):
     return await postUpload(data, db)
 
 
-@router.get("/{postId}", status_code=200)
-async def count(postId: int, firstDate: date, lastDate: date, db: Session = Depends(get_db)):
+@router.get("/{memberId}", status_code=200)
+async def count(memberId: int, firstDate: date, lastDate: date, db: Session = Depends(get_db)):
     """
     --- 목표 ---
     1. 주어진 일자 내의 게시물 개수를 반환한다.
     ------------
 
     --- Path 파라미터 ---
-    1. postId: int
+    1. memberId: int
     --------------------
 
     --- Query 파라미터 ---
@@ -41,4 +41,4 @@ async def count(postId: int, firstDate: date, lastDate: date, db: Session = Depe
     2. lastDate: date
     ---------------------
     """
-    return await postCount(postId, firstDate, lastDate, db)
+    return await postCount(memberId, firstDate, lastDate, db)
