@@ -9,3 +9,9 @@ async def followCreate(fromMember, toMember, db):
     db.commit()
 
     return row.as_dict()
+
+
+async def findAllByMemberId(memberId, db):
+    row = db.query(model.Follow).filter_by(fromMemberId=memberId).all()
+
+    return row
