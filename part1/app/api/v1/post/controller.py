@@ -4,7 +4,7 @@ from sqlalchemy.orm.session import Session
 
 from app.database import get_db
 from app.api.v1.post.schema import PostUpload, PostReturn
-from app.api.v1.post.service import postUpload, postCount
+from app.api.v1.post.service import postUpload, postCount, postPage
 
 router = APIRouter(tags=["Post"])
 
@@ -42,3 +42,23 @@ async def count(memberId: int, firstDate: date, lastDate: date, db: Session = De
     ---------------------
     """
     return await postCount(memberId, firstDate, lastDate, db)
+
+
+@router.get("/page/{memberId}", status_code=200)
+async def page(memberId: int, offset: int, limit: int, db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. memberId가 memberId인 게시글을 가져온 후
+    2. (offset*limit)번 째 게시글부터 (offset*limit)+limit번 째 게시글을 가져와 반환한다.
+    ------------
+
+    --- Path 파라미터 ---
+    1. memberId: int
+    --------------------
+
+    --- Qeury 파라미터 ---
+    1. offset: int
+    2. limit: int
+    ---------------------
+    """
+    return await postPage(memberId, offset, limit, db)

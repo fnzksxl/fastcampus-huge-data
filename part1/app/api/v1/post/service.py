@@ -1,3 +1,4 @@
+from sqlalchemy import desc
 from app import model
 
 
@@ -17,3 +18,17 @@ async def postCount(id, firstDate, lastDate, db):
     )
 
     return {"count": len(row), "posts": row}
+
+
+async def postPage(memberId, offset, limit, db):
+    start = offset * limit
+    row = (
+        db.query(model.Post)
+        .filter_by(memberId=memberId)
+        .order_by(desc(model.Post.created_at))
+        .offset(start)
+        .limit(limit)
+        .all()
+    )
+
+    return row
