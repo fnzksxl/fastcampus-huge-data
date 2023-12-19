@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
+from app.api.v1.application.get_timeline_post_usacase import get_timeline_post_usacase
 from app.api.v1.post.schema import PostUpload, PostReturn
 from app.api.v1.post.service import postUpload, postCount, postPage, postCursor
 
@@ -82,3 +83,25 @@ async def cursor(memberId: int, size: int, key: int = None, db: Session = Depend
     ---------------------
     """
     return await postCursor(memberId, size, key, db)
+
+
+@router.get("/cursor/timeline/{memberId}", status_code=200)
+async def cursorFollowTimeline(
+    memberId: int, size: int, key: int = None, db: Session = Depends(get_db)
+):
+    """
+    --- 목표 ---
+    1. memberId를 가진 member의 follow 리스트를 받는다
+    2. 1의 결과로 id가 key보다 작은 게시글을 size 개수만큼 가져와 반환한다.
+    ------------
+
+    --- Path 파라미터 ---
+    1. memberId: int
+    --------------------
+
+    --- Query 파라미터 ---
+    1. size: int
+    2. key: int (can be None)
+    ---------------------
+    """
+    return await get_timeline_post_usacase(memberId, size, key, db)
