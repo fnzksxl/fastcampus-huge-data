@@ -56,3 +56,10 @@ class MemberNicknameHistory(Base, BaseMin):
 
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+class Timeline(Base, BaseMin):
+    __tablename__ = "timeline"
+
+    memberId = Column(Integer, ForeignKey("member.id"))
+    postId = Column(Integer, ForeignKey("post.id"))

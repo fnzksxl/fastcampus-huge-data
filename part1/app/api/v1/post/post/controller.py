@@ -3,9 +3,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
+from app.api.v1.application.post_fanout_usacase import post_fanout_usacase
 from app.api.v1.application.get_timeline_post_usacase import get_timeline_post_usacase
-from app.api.v1.post.schema import PostUpload, PostReturn
-from app.api.v1.post.service import postUpload, postCount, postPage, postCursor
+from app.api.v1.post.post.schema import PostUpload, PostReturn
+from app.api.v1.post.post.service import postUpload, postCount, postPage, postCursor
 
 router = APIRouter(tags=["Post"])
 
@@ -105,3 +106,19 @@ async def cursorFollowTimeline(
     ---------------------
     """
     return await get_timeline_post_usacase(memberId, size, key, db)
+
+
+@router.post("/fanout", status_code=201)
+async def createFanout(data: PostUpload, db: Session = Depends(get_db)):
+    """
+    --- 목표 ---
+    1. 게시글을 등록하고, 타임라인에 추가한다.
+    ------------
+
+    --- 바디 ---
+    1. PostUpload
+    - memberId: int
+    - content: str
+    ------------
+    """
+    return await post_fanout_usacase(data, db)

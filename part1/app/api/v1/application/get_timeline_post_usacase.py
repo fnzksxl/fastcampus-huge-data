@@ -1,5 +1,5 @@
 from app.api.v1.follow.service import findAllByMemberId
-from app.api.v1.post.service import postCursor
+from app.api.v1.post.post.service import postCursor
 
 
 async def get_timeline_post_usacase(memberId, key, size, db):
