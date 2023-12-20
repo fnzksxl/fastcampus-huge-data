@@ -63,3 +63,5 @@ class Timeline(Base, BaseMin):
 
     memberId = Column(Integer, ForeignKey("member.id"))
     postId = Column(Integer, ForeignKey("post.id"))
+
+    __table_args__ = (Index("idx_member_post_id", "postId", "memberId"),)
