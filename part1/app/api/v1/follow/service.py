@@ -15,3 +15,9 @@ async def findAllByMemberId(memberId, db):
     row = db.query(model.Follow).filter_by(fromMemberId=memberId).all()
 
     return row
+
+
+async def findAllFollowerByMemberId(memberId, db):
+    row = db.query(model.Follow).filter_by(toMemberId=memberId).all()
+
+    return row
