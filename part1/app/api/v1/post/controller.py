@@ -7,6 +7,7 @@ from app.api.v1.application.post_fanout_usacase import post_fanout_usacase
 from app.api.v1.application.get_timeline_post_usacase import get_timeline_post_usacase
 from app.api.v1.post.post.schema import PostUpload, PostReturn
 from app.api.v1.post.post.service import postUpload, postCount, postPage, postCursor
+from app.api.v1.post.timeline.service import timelineFind
 
 router = APIRouter(tags=["Post"])
 
@@ -122,3 +123,10 @@ async def createFanout(data: PostUpload, db: Session = Depends(get_db)):
     ------------
     """
     return await post_fanout_usacase(data, db)
+
+
+@router.get("/cursor/fanout/{memberId}", status_code=200)
+async def cursorFollowFanoutTimeline(
+    memberId: int, size: int, key: int = None, db: Session = Depends(get_db)
+):
+    return await timelineFind(memberId, size, key, db)
